@@ -1,0 +1,1 @@
+"./UART_example.obj" "./button_based_delay.obj" "./button_blink.obj" "./button_interrupt.obj" "./debouncing.obj" "./extra_work_button_blink.obj" "./extra_work_simple_blink.obj" "./main.obj" "./multiple_blink.obj" "./offboard_blink.obj" "./simple_blink.obj" "./software_pwm.obj" "./timer_a_blink.obj" "../lnk_msp430g2553.cmd" -llibc.a 
