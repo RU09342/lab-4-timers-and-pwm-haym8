@@ -1,15 +1,30 @@
+## Mitchell Hay
+
 # Hardware PWM
-Now that you have done the software version of PWM, now it is time to start leveraging the other features of these Timer Modules.
+The hardware PWM part of this lab is very similar to the software side of it. Instead of using timer interrupts to light up the LEDs, we can make one of the GPIO pins the output of PWM. There still is the button function where the brightness goes up 10% every button press, but this time it would be an off-board LED being lit up. The hardware PWM circuit can be seen below.
+![Hardware_PWM](hardware_pwm.gif)
 
-## Task
-You need to replicate the same behavior as in the software PWM, only using the Timer Modules ability to directly output to a GPIO Pin instead of managing them in software. 
+# Devices
+* MSP430F5529
+* MSP430FR2311
+* MSP430FR5994
+* MSP430FR6989
+* MSP430G2553
 
-### Hints 
-Read up on the P1SEL registers as well as look at the Timer modules ability to multiplex.
+# Getting Started
+## Dependencies
+Each device requires no outside dependencies. Everything needed to run the program is included in the folder. Each folder is labeled with the device it is meant for.
+## Setup
+Each of the device projects in this part of the lab can be imported into Code Composer Studio and run from there. To import it, open CCS and select File -> Import -> Code Composer Studio -> CCS Project and select the desired directory.
 
-## Extra Work
-### Using ACLK
-Some of these microprocessors have a built in ACLK which is extremely slow compared to your up to 25MHz available on some of them. What is the overall impact on the system when using this clock? Can you actually use your PWM code with a clock that slow?
+# Functionality
+## Usage
+The user presses a button to increase the brightness of an LED. The LED eventually resets back to off when it cannot get any brighter.
+## Off-Board
+This part of the lab required a breadboard as well. The GPIO pin was selected for each of the microprocessors, so attach the output of the GPIO pin to a small resistor (1kOhm) in series with the LED. Running the program normally will output the PWM signal onto the GPIO pin, which will be shown on the breadboard.
 
-### Ultra Low Power
-Using a combination of ACLK, Low Power Modes, and any other means you may deem necessary, optimize this PWM code to run at 50% duty cycle with a LED on the MSP430FR5994. In particular, time how long your code can run on the fully charged super capacitor. You do not need to worry about the button control in this case, and you will probably want to disable all the GPIO that you are not using (nudge, nudge, hint, hint).
+# Known Errors
+There are no known errors at this time
+
+# Tasks
+* [x] Use the PWM module on GPIO pins
