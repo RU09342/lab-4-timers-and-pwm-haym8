@@ -19,10 +19,10 @@ int main(void) {
 	P1OUT &= ~BIT0;
 
 	// Button setup
-	P5DIR &= ~(BIT6); //set P1.1 input
+	P5DIR &= ~(BIT6); //set P5.6 input
 	P5REN |= BIT6; //enable pull-up resistor
 	P5OUT |= BIT6;
-	P5IE |= BIT6; //enable the interrupt on P1.1
+	P5IE |= BIT6; //enable the interrupt on P5.6
 	P5IES |= ~BIT6; //set to look for falling edge
 	P5IFG &= ~(BIT6); //clear interrupt flag
 
