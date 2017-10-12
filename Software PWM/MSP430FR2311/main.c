@@ -1,3 +1,10 @@
+/*
+ * Mitchell Hay
+ * RU09342
+ * Lab 4 Software PWM
+ * MSP430FR2311
+ */
+
 #include <msp430.h>
 
 volatile unsigned int i = 500;
@@ -9,11 +16,13 @@ int main(void) {
 	// Disable the GPIO power-on default high-impedance mode
 	PM5CTL0 &= ~LOCKLPM5;
 
+	// LED setup
 	P1DIR |= BIT0;
 	P1OUT &= ~BIT0;
 	P2DIR |= BIT0;
 	P2OUT &= ~BIT0;
 
+	// Button setup
 	P1DIR &= ~(BIT1); //set P1.1 input
 	P1REN |= BIT1; //enable pull-up resistor
 	P1OUT |= BIT1;
@@ -21,12 +30,14 @@ int main(void) {
 	P1IES |= ~BIT1; //set to look for falling edge
 	P1IFG &= ~(BIT1); //clear interrupt flag
 
+	// Timer A0 setup
 	TB0CCTL1 = CCIE; 			// Interrupt enabled for CCR1
 	TB0CCTL0 = CCIE;			// Interrupt enabled for CCR0
 	TB0CTL = TBSSEL_2 + MC_1; 	// SMCLK, up mode
 	TB0CCR0 = 1000 - 1;			// 1 kHz frequency
 	TB0CCR1 = i - 1;			// 50% duty cycle to start
 
+	// Timer A1 setup for debounce
 	TB1CCR0 = 4000;
 	TB1CCTL0 |= CCIE;
 	TB1CTL |= TBSSEL_2 + MC_1;
@@ -68,7 +79,7 @@ __interrupt void Timer1_Debounce(void) {
 		}
 	}
 	TB0CCR1 = i - 1;
-	btnPress = 0;
+	btnPress = 0; // Clear button press
 	P1IFG &= ~BIT1; // Clear flag
 }
 
@@ -76,7 +87,7 @@ __interrupt void Timer1_Debounce(void) {
 __interrupt void PORT_1(void) {
 	TB1CTL |= TBSSEL_2 + MC_1; // Start Timer 1
 	P1IE &= ~BIT1; // Turn off interrupt enable
-	TB1CCTL0 |= CCIE; //
-	btnPress = 1;
+	TB1CCTL0 |= CCIE; // enable interrupt for timer
+	btnPress = 1; // Show button was pressed
 	P1IFG &= ~BIT1; // Clear flag
 }
