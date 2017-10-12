@@ -1,6 +1,10 @@
 /*
- *
+ * Mitchell Hay
+ * RU09342
+ * Lab 4 Hardware PWM
+ * MSP430F5529
  */
+
 #include <msp430.h>
 volatile unsigned int i = 500;
 volatile unsigned int btnPress = 0;
@@ -9,8 +13,12 @@ int main(void) {
 	WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
 	P1DIR |= BIT2;                       // P1.2 and P1.3 output
 	P1SEL |= BIT2;                       // P1.2 and P1.3 options select
+	
+	// LED setup
 	P4DIR |= BIT7;
 	P4OUT &= ~BIT7;
+	
+	// Timer A0 setup
 	TA0CCR0 = 1000 - 1;                          // PWM Period
 	TA0CCTL1 = OUTMOD_7;                      // CCR1 reset/set
 	TA0CCR1 = i - 1;                            // CCR1 PWM duty cycle
@@ -23,6 +31,7 @@ int main(void) {
 	P1IES |= ~BIT1; //set to look for falling edge
 	P1IFG &= ~(BIT1); //clear interrupt flag
 
+	// Timer A1 setup for debounce
 	TA1CCR0 = 4000;
 	TA1CCTL0 |= CCIE;
 	TA1CTL |= TASSEL_2 + MC_1;
@@ -50,7 +59,7 @@ __interrupt void Timer1_Debounce(void) {
 		}
 	}
 	TA0CCR1 = i - 1;
-	btnPress = 0;
+	btnPress = 0; // Clear button press
 	P1IFG &= ~BIT1; // Clear flag
 }
 
@@ -58,7 +67,7 @@ __interrupt void Timer1_Debounce(void) {
 __interrupt void PORT_1(void) {
 	TA1CTL |= TASSEL_2 + MC_1; // Start Timer 1
 	P1IE &= ~BIT1; // Turn off interrupt enable
-	TA1CCTL0 |= CCIE; //
-	btnPress = 1;
+	TA1CCTL0 |= CCIE; // Enable interrupt for timer
+	btnPress = 1; // Show button was pressed
 	P1IFG &= ~BIT1; // Clear flag
 }
