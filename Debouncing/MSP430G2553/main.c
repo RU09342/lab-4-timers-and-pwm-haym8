@@ -1,19 +1,29 @@
+/*
+ * Mitchell Hay
+ * RU09342
+ * Lab 4 Debouncing
+ * MSP430G2553
+ */
+
 #include <msp430.h>
 unsigned int btnPress = 0;
 
 int main(void) {
 	WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
 
+	// LED setup
 	P1DIR |= BIT0;
 	P1OUT &= ~BIT0;
 
-	P1DIR &= ~(BIT3); //set P1.1 input
+	// Button setup
+	P1DIR &= ~(BIT3); //set P1.3 input
 	P1REN |= BIT3; //enable pull-up resistor
 	P1OUT |= BIT3;
-	P1IE |= BIT3; //enable the interrupt on P1.1
+	P1IE |= BIT3; //enable the interrupt on P1.3
 	P1IES |= ~BIT3; //set to look for falling edge
 	P1IFG &= ~(BIT3); //clear interrupt flag
 
+	// Timer A setup for debounce handling
 	CCR0 = 4000;
 	CCTL0 |= CCIE;
 	TACTL |= TASSEL_2 + MC_1;
@@ -34,7 +44,7 @@ __interrupt void Timer0_Debounce(void) {
 	if (btnPress == 1) {
 		P1OUT ^= BIT0; // Toggle LED
 	}
-	btnPress = 0;
+	btnPress = 0; // Clear button press
 	P1IFG &= ~BIT3; // Clear flag
 }
 
@@ -42,8 +52,8 @@ __interrupt void Timer0_Debounce(void) {
 __interrupt void PORT_1(void) {
 	TA0CTL |= TASSEL_2 + MC_1; // Start Timer 1
 	P1IE &= ~BIT3; // Turn off interrupt enable
-	CCTL0 |= CCIE; //
-	btnPress = 1;
+	CCTL0 |= CCIE; // Enable timer interrupt
+	btnPress = 1; // Show button was pressed
 	P1IFG &= ~BIT3; // Clear flag
 }
 
