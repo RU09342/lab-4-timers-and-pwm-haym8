@@ -1,3 +1,10 @@
+/*
+ * Mitchell Hay
+ * RU09342
+ * Lab 4 Hardware PWM
+ * MSP430FR5994
+ */
+
 #include <msp430.h>
 volatile unsigned int i = 500;
 volatile unsigned int btnPress = 0;
@@ -8,18 +15,18 @@ int main(void) {
 	// Disable the GPIO power-on default high-impedance mode
 	PM5CTL0 &= ~LOCKLPM5;
 
-	P1DIR |= BIT0 + BIT1;                   // P1.0 and P1.1 output
-	P1SEL0 |= BIT0;                  // P1.0 and P1.1 options select
+	P1DIR |= BIT0 + BIT1;                   // P1.0 output
+	P1SEL0 |= BIT0;                  	// P1.0 options select
 
-	TA0CCR0 = 1000 - 1;                          // PWM Period
-	TA0CCTL1 = OUTMOD_7;                      // CCR1 reset/set
-	TA0CCR1 = i - 1;                            // CCR1 PWM duty cycle
-	TA0CTL = TASSEL_2 + MC_1 + TACLR;         // SMCLK, up mode, clear TAR
+	TA0CCR0 = 1000 - 1;                     // PWM Period
+	TA0CCTL1 = OUTMOD_7;                    // CCR1 reset/set
+	TA0CCR1 = i - 1;                        // CCR1 PWM duty cycle
+	TA0CTL = TASSEL_2 + MC_1 + TACLR;       // SMCLK, up mode, clear TAR
 
-	P5DIR &= ~(BIT6); //set P1.1 input
+	P5DIR &= ~(BIT6); //set P5.6 input
 	P5REN |= BIT6; //enable pull-up resistor
 	P5OUT |= BIT6;
-	P5IE |= BIT6; //enable the interrupt on P1.1
+	P5IE |= BIT6; //enable the interrupt on P5.6
 	P5IES |= ~BIT6; //set to look for falling edge
 	P5IFG &= ~(BIT6); //clear interrupt flag
 
@@ -50,7 +57,7 @@ __interrupt void Timer1_Debounce(void) {
 		}
 	}
 	TA0CCR1 = i - 1;
-	btnPress = 0;
+	btnPress = 0; // Clear button press
 	P5IFG &= ~BIT6; // Clear flag
 }
 
@@ -58,7 +65,7 @@ __interrupt void Timer1_Debounce(void) {
 __interrupt void PORT_5(void) {
 	TA1CTL |= TASSEL_2 + MC_1; // Start Timer 1
 	P5IE &= ~BIT6; // Turn off interrupt enable
-	TA1CCTL0 |= CCIE; //
-	btnPress = 1;
+	TA1CCTL0 |= CCIE; // interrupt enable for timer
+	btnPress = 1; // Show button was pressed
 	P5IFG &= ~BIT6; // Clear flag
 }
