@@ -11,8 +11,8 @@ volatile unsigned int btnPress = 0;
 
 int main(void) {
 	WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
-	P1DIR |= BIT2;                       // P1.2 and P1.3 output
-	P1SEL |= BIT2;                       // P1.2 and P1.3 options select
+	P1DIR |= BIT2;                       // P1.2 output
+	P1SEL |= BIT2;                       // P1.2 options select
 	
 	// LED setup
 	P4DIR |= BIT7;
