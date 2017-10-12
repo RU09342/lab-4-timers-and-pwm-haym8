@@ -1,6 +1,10 @@
 /*
- *
+ * Mitchell Hay
+ * RU09342
+ * Lab 4 Debouncing
+ * MSP430F5529
  */
+
 #include <msp430.h>
 unsigned int btnPress = 0;
 
